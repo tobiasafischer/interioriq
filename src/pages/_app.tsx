@@ -7,7 +7,7 @@ import { api } from '~/utils/api'
 import '~/styles/globals.css'
 import { Providers } from './headers/providers'
 import { Header } from './headers/header'
-import Layout from '~/components/navigation/layout'
+import NavigationLayout from '~/layouts/navigation-layout'
 
 const MyApp: AppType<{ session: Session | null }> = ({
 	Component,
@@ -16,9 +16,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 	return (
 		<Providers session={session}>
 			<Header />
-			<Layout>
+			<NavigationLayout>
 				<Component {...pageProps} />
-			</Layout>
+			</NavigationLayout>
 		</Providers>
 	)
 }

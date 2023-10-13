@@ -3,7 +3,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	min-height: 100vh;
+	height: 100vh;
 	background-color: #fcfcfc;
 	position: relative;
 }
@@ -54,6 +54,14 @@
 	font-weight: 800;
 	letter-spacing: -0.025em;
 	margin: 0;
+	color: #f3583f;
+}
+.subtitle {
+	font-size: 2rem;
+	line-height: 1;
+	font-weight: 600;
+	letter-spacing: -0.025em;
+	margin-top: 15px;
 	color: #f3583f;
 }
 

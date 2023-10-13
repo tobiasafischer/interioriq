@@ -13,7 +13,7 @@ export default function Home() {
 	})
 
 	useEffect(() => {
-		if (!user.data?.company) void router.push('/signup')
+		if (!user.data?.company) void router.push('/signup/company')
 	}, [user, router])
 
 	return (
