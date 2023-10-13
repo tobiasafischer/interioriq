@@ -1,20 +1,26 @@
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import { type AppType } from "next/app";
+import { type Session } from 'next-auth'
 
-import { api } from "~/utils/api";
+import { type AppType } from 'next/app'
 
-import "~/styles/globals.css";
+import { api } from '~/utils/api'
+
+import '~/styles/globals.css'
+import { Providers } from './headers/providers'
+import { Header } from './headers/header'
+import Layout from '~/components/navigation/layout'
 
 const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
+	Component,
+	pageProps: { session, ...pageProps },
 }) => {
-  return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
-  );
-};
+	return (
+		<Providers session={session}>
+			<Header />
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
+		</Providers>
+	)
+}
 
-export default api.withTRPC(MyApp);
+export default api.withTRPC(MyApp)
