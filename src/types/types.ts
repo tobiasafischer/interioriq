@@ -1,8 +1,8 @@
-export enum PricingStructure {
-	hourly = 'Hourly',
-	flatFee = 'Flat fee',
-	ppsqft = 'Price per square foot',
-	percentage = 'Percentage of project',
-	commission = 'Commission only',
-	hybrid = 'Hybrid',
-}
+export type PricingStructure =
+	| 'Hourly'
+	| 'Flat fee'
+	| 'Price per square foot'
+	| 'Percentage'
+	| 'Commission'
+	| 'Hybrid'
+	| 'Multiple'

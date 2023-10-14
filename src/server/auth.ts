@@ -3,7 +3,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { type GetServerSidePropsContext } from 'next'
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import { redirect, useRouter } from 'next/navigation'
 
 import { env } from '~/env.mjs'
 import { db } from '~/server/db'
@@ -50,18 +49,6 @@ export const authOptions: NextAuthOptions = {
 			// Allows callback URLs on the same origin
 			else if (new URL(url).origin === baseUrl) return url
 			return baseUrl
-		},
-	},
-	events: {
-		async signIn(message) {
-			if (message.isNewUser) {
-				const caller = appRouter.createCaller({
-					session: null,
-					db,
-				})
-
-				await caller.user.initialize({ user: message.user })
-			}
 		},
 	},
 
