@@ -22,4 +22,10 @@ export const userRouter = createTRPCRouter({
 		})
 		return updatedUser
 	}),
+	getUser: publicProcedure
+		.input(z.number())
+		.query(async ({ ctx, input }): Promise<User | null> => {
+			const user = await ctx.db.user.findUnique({ where: { id: input } })
+			return user
+		}),
 })

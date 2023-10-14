@@ -65,6 +65,7 @@ model Client {
 
 model Project {
   id             Int       @id @default(autoincrement())
+  name           String
   type           String?
   rooms          Int
   bath           Int
@@ -74,6 +75,10 @@ model Project {
   location       String
   pricingEstimate Int
   clientId       Int?
+  userId          Int
+  supportingFiles String[]
+  estimatedEndDate DateTime?
+  dateAdded       DateTime
 }
 
 model VerificationToken {

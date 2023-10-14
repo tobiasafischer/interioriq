@@ -37,7 +37,7 @@ const Company = () => {
 	}
 
 	useEffect(() => {
-		if (mutation.isSuccess) void router.push('/signup/clients')
+		if (mutation.isSuccess) void router.push('/dashboard')
 	}, [mutation.isSuccess, router])
 
 	return (
