@@ -7,27 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model Company {
-  id              Int       @id @default(autoincrement())
-  name            String
-  clients         Int       @default(0)
-  employees       Int       @default(0)
+  id               Int    @id @default(autoincrement())
+  name             String
+  clients          Int    @default(0)
+  employees        Int    @default(0)
   pricingStructure String
-  userId          Int
+  userId           Int
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  name            String?
-  email           String?   @unique
-  emailVerified   DateTime?
-  image           String?
-  companyId       Int?
-  accounts        Account[]
-  sessions        Session[]
-  projects        String[]
+  id            Int       @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  companyId     Int?
+  accounts      Account[]
+  sessions      Session[]
+  projects      String[]
 }
 
 model Account {
@@ -35,7 +33,7 @@ model Account {
   userId            Int
   type              String
   provider          String
-  providerAccountId  String
+  providerAccountId String
   refresh_token     String?
   access_token      String?
   expires_at        Int?
@@ -49,11 +47,11 @@ model Account {
 }
 
 model Session {
-  id           Int       @id @default(autoincrement())
-  sessionToken String    @unique
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique
   userId       Int
   expires      DateTime
-  user         User      @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model Client {
@@ -61,30 +59,32 @@ model Client {
   name            String?
   email           String?   @unique
   personalityType String
+  Project         Project[]
 }
 
 model Project {
-  id             Int       @id @default(autoincrement())
-  name           String
-  type           String?
-  rooms          Int
-  bath           Int
-  squareFootage  Int
-  minBudget      Int
-  maxBudget      Int
-  location       String
-  pricingEstimate Int
-  clientId       Int?
-  userId          Int
-  supportingFiles String[]
+  id               Int       @id @default(autoincrement())
+  name             String
+  type             String?
+  rooms            Int
+  bath             Int
+  squareFootage    Int
+  minBudget        Int
+  maxBudget        Int
+  location         String
+  pricingEstimate  Int
+  clientId         Int?
+  userId           Int
+  supportingFiles  String[]
   estimatedEndDate DateTime?
-  dateAdded       DateTime
+  dateAdded        DateTime
+  client           Client?   @relation(fields: [clientId], references: [id])
 }
 
 model VerificationToken {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   identifier String
-  token      String    @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])

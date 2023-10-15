@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Table,
 	Thead,
@@ -33,7 +33,7 @@ const Dashboard = () => {
 	const data = api.project.getProjects.useQuery(Number.parseInt(sessionData?.user.id ?? '0'))
 	const [isAddingProject, setIsAddingProject] = useState(false)
 	const [newProjectName, setNewProjectName] = useState('')
-
+	useEffect(() => console.log(data.data), [data])
 	const openAddProjectModal = () => {
 		setIsAddingProject(true)
 	}
@@ -72,23 +72,26 @@ const Dashboard = () => {
 								<Th>Date Added</Th>
 							</Tr>
 						</Thead>
-						{data.isLoading ? (
-							<SkeletonTable />
-						) : (
-							<Tbody>
-								{data.data?.length === 0 && <Text>There are no projects.</Text>}
+						{data.data?.length === 0 && (
+							<div className='flex justify-center items-center w-full h-full'>
+								<Text>There are no projects.</Text>
+							</div>
+						)}
+						{data.isLoading && <SkeletonTable />}
+						{!data.isLoading && (data.data?.length ?? 0) > 0 && (
+							<Tbody className='w-full h-full'>
 								{data.data?.map((row, i) => (
 									<Tr key={row.id}>
 										<Td>{i + 1}</Td>
 										<Td>{row.name}</Td>
 										<Td>
 											{row.estimatedEndDate instanceof Date
-												? format(row.estimatedEndDate as Date, 'mm/yyyy')
+												? format(row.estimatedEndDate, 'mm/yyyy')
 												: 'null'}
 										</Td>
 										<Td>asdasdasdasdasdasdas</Td>
 										<Td>asdasdasdasdasdasdas</Td>
-										<Td>{format(row.dateAdded as Date, 'mm/yyyy')}</Td>
+										<Td>{format(row.dateAdded, 'mm/yyyy')}</Td>
 									</Tr>
 								))}
 							</Tbody>
