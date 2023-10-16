@@ -48,22 +48,16 @@ const Client = ({ userId, onSubmit }: { userId: number; onSubmit: (val: object) 
 		const input: ClientType = {
 			...(val as Pick<ClientType, 'name' | 'email'>),
 			userId,
-			personalityType: undefined,
+			personalityType: 'not-input',
 		}
-		console.log(input)
 		mutate.mutate(input)
 	}
-
-	const methods = useForm<z.infer<typeof schema>>({
-		mode: 'onChange',
-		resolver: zodResolver(schema),
-	})
 
 	return (
 		<>
 			<div className='h-full w-full'>
 				{isMakingNewClient ? (
-					<Form onSubmit={onClientSubmit} schema={schema} inputMethods={methods}>
+					<Form onSubmit={onClientSubmit} schema={schema}>
 						<div className='h-full w-full flex flex-col gap-10'>
 							<Input label="Client's name" name='name' />
 							<Input name='email' label="Client's email address" />

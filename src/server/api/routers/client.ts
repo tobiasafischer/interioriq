@@ -45,6 +45,7 @@ export const clientRouter = createTRPCRouter({
 	createClient: publicProcedure
 		.input(newClientSchema)
 		.mutation(async ({ ctx, input }): Promise<Client> => {
+			console.log(input)
 			const newClient = await ctx.db.client.create({
 				data: input,
 			})

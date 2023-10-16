@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react'
-import { Controller, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form'
-import {
-	Input as ChakraInput,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Text,
-	type InputProps,
-} from '@chakra-ui/react'
+import { Controller, useFormContext } from 'react-hook-form'
+import { Input as ChakraInput, FormLabel, Text, type InputProps } from '@chakra-ui/react'
 
 const Input = ({
 	name,
