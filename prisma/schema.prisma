@@ -56,9 +56,10 @@ model Session {
 
 model Client {
   id              Int       @id @default(autoincrement())
-  name            String?
-  email           String?   @unique
-  personalityType String
+  name            String
+  email           String   @unique
+  personalityType String?
+  userId          Int
   Project         Project[]
 }
 
@@ -68,11 +69,12 @@ model Project {
   type             String?
   rooms            Int
   bath             Int
+  pricingStructure String
   squareFootage    Int
   minBudget        Int
   maxBudget        Int
   location         String
-  pricingEstimate  Int
+  pricingEstimate  Int?
   clientId         Int?
   userId           Int
   supportingFiles  String[]

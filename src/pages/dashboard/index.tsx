@@ -7,14 +7,6 @@ import {
 	Th,
 	Td,
 	Button,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalBody,
-	ModalCloseButton,
-	Input,
-	ModalFooter,
 	Card,
 	CardHeader,
 	CardBody,
@@ -26,28 +18,16 @@ import SkeletonTable from '~/components/skeleton/skeleton-table'
 import { AddIcon } from '@chakra-ui/icons'
 import { useSession } from 'next-auth/react'
 import { api } from '~/utils/api'
+import FormModal from './modal'
 
 const Dashboard = () => {
 	const { data: sessionData } = useSession()
 
 	const data = api.project.getProjects.useQuery(Number.parseInt(sessionData?.user.id ?? '0'))
-	const [isAddingProject, setIsAddingProject] = useState(false)
-	const [newProjectName, setNewProjectName] = useState('')
+	const [isOpen, setIsOpen] = useState(false)
 	useEffect(() => console.log(data.data), [data])
-	const openAddProjectModal = () => {
-		setIsAddingProject(true)
-	}
 
-	const closeAddProjectModal = () => {
-		setIsAddingProject(false)
-		setNewProjectName('')
-	}
-
-	const addProject = () => {
-		if (newProjectName.trim() !== '') {
-			closeAddProjectModal()
-		}
-	}
+	const toggleModal = () => setIsOpen((prev) => !prev)
 
 	return (
 		<div className='w-full h-full p-20 mt-10'>
@@ -55,13 +35,13 @@ const Dashboard = () => {
 				<CardHeader>
 					<div className='flex w-full justify-between pl-4'>
 						<div className={styles.subtitle}>Projects</div>
-						<Button onClick={openAddProjectModal}>
+						<Button onClick={toggleModal}>
 							<AddIcon color='#f3583f' />
 						</Button>
 					</div>
 				</CardHeader>
-				<CardBody>
-					<Table>
+				<CardBody className='h-full '>
+					<Table className='h-full relative '>
 						<Thead>
 							<Tr>
 								<Th>#</Th>
@@ -73,8 +53,10 @@ const Dashboard = () => {
 							</Tr>
 						</Thead>
 						{data.data?.length === 0 && (
-							<div className='flex justify-center items-center w-full h-full'>
-								<Text>There are no projects.</Text>
+							<div className='absolute flex justify-center items-center flex-col w-full h-5/6 gap-5'>
+								<Text fontSize={22} color='#f3583f' fontWeight='bold'>
+									There are no projects.
+								</Text>
 							</div>
 						)}
 						{data.isLoading && <SkeletonTable />}
@@ -100,26 +82,7 @@ const Dashboard = () => {
 				</CardBody>
 			</Card>
 
-			<Modal isOpen={isAddingProject} onClose={closeAddProjectModal}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Add New Project</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<Input
-							placeholder='Project Name'
-							value={newProjectName}
-							onChange={(e) => setNewProjectName(e.target.value)}
-						/>
-					</ModalBody>
-					<ModalFooter>
-						<Button colorScheme='blue' onClick={addProject}>
-							Add Project
-						</Button>
-						<Button onClick={closeAddProjectModal}>Cancel</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
+			<FormModal isOpen={isOpen} toggleModal={toggleModal} />
 		</div>
 	)
 }

@@ -1,27 +1,37 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
-import { Input as ChakraInput, FormLabel, type InputProps } from '@chakra-ui/react'
+import { Controller, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form'
+import {
+	Input as ChakraInput,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
+	Text,
+	type InputProps,
+} from '@chakra-ui/react'
 
 const Input = ({
 	name,
-	defaultValue = '',
 	label,
 	...rest
 }: {
 	name: string
-	defaultValue?: string
 	label?: string
 } & InputProps) => {
-	const { control } = useFormContext()
+	const {
+		control,
+		formState: { errors },
+	} = useFormContext()
+
 	return (
 		<div className='flex flex-col w-full'>
 			{label && <FormLabel textColor='#5c626c'>{label}</FormLabel>}
 			<Controller
-				name={name}
 				control={control}
-				defaultValue={defaultValue}
-				render={({ field }) => <ChakraInput {...field} {...rest} focusBorderColor='#f3583f' />}
+				name={name}
+				render={({ field }) => <ChakraInput {...rest} {...field} />}
 			/>
+			{errors[name] && <Text color='#e53e3e'>{errors[name]!.message as string}</Text>}
 		</div>
 	)
 }

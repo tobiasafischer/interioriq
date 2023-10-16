@@ -7,8 +7,8 @@ import SignupLayout from '../../layouts/signup-layout'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { api } from '~/utils/api'
-import { type Company } from '@prisma/client'
 import Select from '~/components/form/Select'
+import { z } from 'zod'
 
 type Form = {
 	id: number
@@ -25,7 +25,6 @@ const Company = () => {
 	const mutation = api.company.createCompany.useMutation()
 
 	const onSubmit = (val: object) => {
-		console.log(val)
 		const res = { ...val } as Form
 		mutation.mutate({
 			name: res.name,
@@ -40,9 +39,16 @@ const Company = () => {
 		if (mutation.isSuccess) void router.push('/dashboard')
 	}, [mutation.isSuccess, router])
 
+	const schema = z.object({
+		name: z.string().min(1).max(100), // Adjust min and max as needed
+		employees: z.number(),
+		clients: z.number(),
+		pricingStructure: z.string(),
+	})
+
 	return (
 		<SignupLayout>
-			<Form onSubmit={(val: object) => void onSubmit(val)}>
+			<Form onSubmit={onSubmit} schema={schema}>
 				<div className='flex justify-between items-end'>
 					<div className='flex flex-col gap-10 w-full'>
 						<Input
@@ -51,7 +57,6 @@ const Company = () => {
 							placeholder='Company Name'
 							variant='flushed'
 							autoFocus
-							isRequired
 							size='lg'
 						/>
 						<Input
@@ -60,7 +65,6 @@ const Company = () => {
 							placeholder='0'
 							variant='flushed'
 							type='number'
-							isRequired
 							size='lg'
 						/>
 						<Input
@@ -69,7 +73,6 @@ const Company = () => {
 							placeholder='0'
 							variant='flushed'
 							type='number'
-							isRequired
 							size='lg'
 						/>
 						<div>
@@ -79,11 +82,7 @@ const Company = () => {
 							<Select name='pricingStructure' defaultValue='Hourly'>
 								<option value='Hourly'>Hourly</option>
 								<option value='Flat fee'>Flat fee</option>
-								<option
-									value='Price per square
-								foot'>
-									Price per square foot
-								</option>
+								<option value='Price per square foot'>Price per square foot</option>
 								<option value='Percentage'>Percentage</option>
 								<option value='Commission'>Commission</option>
 								<option value='Hybrid'>Hybrid</option>
