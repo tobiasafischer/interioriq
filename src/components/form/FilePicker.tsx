@@ -1,4 +1,4 @@
-import { FormLabel } from '@chakra-ui/react'
+import { Button, FormLabel } from '@chakra-ui/react'
 import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -21,11 +21,17 @@ const FilePicker = ({ name, label }: { name: string; label?: string }) => {
 				control={control}
 				render={({ field }) => <input {...field} {...getInputProps()} />}
 			/>
-			{isDragActive ? (
-				<p>Drop the files here ...</p>
-			) : (
-				<p>Drag &apos;n&apos; drop some files here, or click to select files</p>
-			)}
+			<Button
+				variant='outline'
+				style={{ border: '2px dotted #f3583f' }}
+				color='#f3583f'
+				height={20}
+				width='full'
+				borderWidth={2}>
+				{isDragActive
+					? 'Drop the files here'
+					: "Drag 'n' drop some files here, or click to select files"}
+			</Button>
 		</div>
 	)
 }

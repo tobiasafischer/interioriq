@@ -1,11 +1,12 @@
-import { Button } from '@chakra-ui/react'
+import { Button, ModalBody, ModalFooter } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import Input from '~/components/form/Input'
 import Select from '~/components/form/Select'
 import { api } from '~/utils/api'
 import Form from '~/components/form/Form'
-import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
+import { type UseFormReturn, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 type ClientType = {
@@ -15,7 +16,7 @@ type ClientType = {
 	personalityType?: string | undefined
 }
 
-const schema = z
+export const newClientSchema = z
 	.object({
 		name: z
 			.string()
@@ -34,7 +35,21 @@ const schema = z
 	})
 	.required()
 
-const Client = ({ userId, onSubmit }: { userId: number; onSubmit: (val: object) => void }) => {
+export const clientSchema = z.object({ id: z.string() })
+
+const Client = ({
+	userId,
+	onSubmit,
+	goToPrevious,
+	goToNext,
+	methods,
+}: {
+	userId: number
+	onSubmit: (val: object) => void
+	goToPrevious: () => void
+	goToNext: () => void
+	methods: UseFormReturn<z.infer<typeof clientSchema>>
+}) => {
 	const data = api.client.getClients.useQuery(userId, {
 		onSuccess: (dat) => {
 			if (dat && dat.length > 0) setIsMakingNewClient(false)
@@ -53,29 +68,73 @@ const Client = ({ userId, onSubmit }: { userId: number; onSubmit: (val: object) 
 		mutate.mutate(input)
 	}
 
+	const clientMethods = useForm<z.infer<typeof newClientSchema>>({
+		mode: 'onChange',
+		resolver: zodResolver(newClientSchema),
+	})
+
 	return (
 		<>
-			<div className='h-full w-full'>
-				{isMakingNewClient ? (
-					<Form onSubmit={onClientSubmit} schema={schema}>
-						<div className='h-full w-full flex flex-col gap-10'>
-							<Input label="Client's name" name='name' />
-							<Input name='email' label="Client's email address" />
-							<Button type='submit'>asdasd</Button>
-						</div>
-					</Form>
-				) : (
-					<Form onSubmit={onSubmit} schema={z.object({ pricingStructure: z.string() })}>
-						<Select name='pricingStructure' defaultValue='Hourly'>
+			{isMakingNewClient ? (
+				<Form methods={clientMethods} onSubmit={onClientSubmit}>
+					<ModalBody className='flex flex-col gap-5'>
+						<Input label="Client's name" name='name' />
+						<Input name='email' label="Client's email address" />
+					</ModalBody>
+					<ModalFooter className='flex gap-5'>
+						<Button
+							variant='outline'
+							color='#f3583f'
+							borderColor='#f3583f'
+							onClick={() => {
+								clientMethods.reset()
+								setIsMakingNewClient(false)
+							}}>
+							Cancel
+						</Button>
+						<Button
+							variant='outline'
+							color='#f3583f'
+							borderColor='#f3583f'
+							type='submit'
+							isDisabled={!clientMethods.formState.isValid}>
+							Create new Client
+						</Button>
+					</ModalFooter>
+				</Form>
+			) : (
+				<Form methods={methods} onSubmit={onSubmit}>
+					<ModalBody className='flex flex-col gap-5'>
+						<Select name='id' label='Choose a client'>
 							{data.data?.map((client) => (
 								<option key={client.id} value={client.id}>
 									{client.name}
 								</option>
 							))}
 						</Select>
-					</Form>
-				)}
-			</div>
+						<Button
+							variant='outline'
+							color='#f3583f'
+							borderColor='#f3583f'
+							marginTop={5}
+							onClick={() => setIsMakingNewClient(true)}>
+							Make a new Client
+						</Button>
+					</ModalBody>
+					<ModalFooter>
+						<Button variant='ghost' onClick={() => void goToPrevious()}>
+							<ChevronLeftIcon fontSize={20} color='#f3583f' />
+						</Button>
+						<Button
+							variant='ghost'
+							type='submit'
+							onClick={() => void goToNext()}
+							isDisabled={!methods.formState.isValid}>
+							<ChevronRightIcon fontSize={20} color='#f3583f' />
+						</Button>
+					</ModalFooter>
+				</Form>
+			)}
 		</>
 	)
 }

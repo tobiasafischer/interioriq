@@ -9,6 +9,9 @@ import { useSession } from 'next-auth/react'
 import { api } from '~/utils/api'
 import Select from '~/components/form/Select'
 import { z } from 'zod'
+import FormContainer from '~/components/form/Container'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Form = {
 	id: number
@@ -46,11 +49,16 @@ const Company = () => {
 		pricingStructure: z.string(),
 	})
 
+	const methods = useForm<z.infer<typeof schema>>({
+		mode: 'onChange',
+		resolver: zodResolver(schema),
+	})
+
 	return (
 		<SignupLayout>
-			<Form onSubmit={onSubmit} schema={schema}>
+			<Form onSubmit={onSubmit} methods={methods}>
 				<div className='flex justify-between items-end'>
-					<div className='flex flex-col gap-10 w-full'>
+					<FormContainer>
 						<Input
 							name='name'
 							label="What is your company's name?"
@@ -89,7 +97,7 @@ const Company = () => {
 								<option value='multiple'>Multiple</option>
 							</Select>
 						</div>
-					</div>
+					</FormContainer>
 					<Button variant='ghost' type='submit'>
 						<ChevronRightIcon fontSize={20} color='#f3583f' />
 					</Button>
