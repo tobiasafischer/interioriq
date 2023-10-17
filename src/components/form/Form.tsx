@@ -8,7 +8,7 @@ const Form = ({
 	resetFields = true,
 	methods,
 }: {
-	onSubmit: (val: object) => void
+	onSubmit?: (val: object) => void
 	children: React.ReactNode
 	resetFields?: boolean
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +20,7 @@ const Form = ({
 				onSubmit={(e) => {
 					e.preventDefault()
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-					onSubmit(methods.getValues())
+					if (onSubmit) onSubmit(methods.getValues())
 					if (resetFields) methods.reset()
 				}}>
 				<FormControl>{children}</FormControl>

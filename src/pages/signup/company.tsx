@@ -12,6 +12,7 @@ import { z } from 'zod'
 import FormContainer from '~/components/form/Container'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import NumberInput from '~/components/form/NumberInput'
 
 type Form = {
 	id: number
@@ -67,20 +68,18 @@ const Company = () => {
 							autoFocus
 							size='lg'
 						/>
-						<Input
+						<NumberInput
 							name='employees'
 							label='How many designers do you have?'
 							placeholder='0'
 							variant='flushed'
-							type='number'
 							size='lg'
 						/>
-						<Input
+						<NumberInput
 							name='clients'
 							label='How many projects do you have going on right now?'
 							placeholder='0'
 							variant='flushed'
-							type='number'
 							size='lg'
 						/>
 						<div>

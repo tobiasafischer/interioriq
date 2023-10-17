@@ -73,13 +73,12 @@ model Project {
   squareFootage    Int
   minBudget        Int
   maxBudget        Int
-  location         String
+  address          String
   pricingEstimate  Int?
   clientId         Int?
   userId           Int
-  supportingFiles  String[]
-  estimatedEndDate DateTime?
-  dateAdded        DateTime
+  estimatedEndDate String
+  dateAdded        String
   client           Client?   @relation(fields: [clientId], references: [id])
 }
 

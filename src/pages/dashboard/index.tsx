@@ -19,15 +19,29 @@ import { AddIcon } from '@chakra-ui/icons'
 import { useSession } from 'next-auth/react'
 import { api } from '~/utils/api'
 import FormModal from './modal'
+import ClientModal from './client-modal'
+import { type ProjectType } from '~/server/api/routers/project'
 
 const Dashboard = () => {
 	const { data: sessionData } = useSession()
 
 	const data = api.project.getProjects.useQuery(Number.parseInt(sessionData?.user.id ?? '0'))
 	const [isOpen, setIsOpen] = useState(false)
-	useEffect(() => console.log(data.data), [data])
+	const [clientOpen, setClientOpen] = useState(false)
+	const [selectedClient, setSelectedClient] = useState<ProjectType | null | undefined>(null)
 
 	const toggleModal = () => setIsOpen((prev) => !prev)
+	const openClient = (idx: number) => {
+		setClientOpen(true)
+		console.log('asidojasjdio')
+		if (data?.data) setSelectedClient(data?.data[idx])
+	}
+	const closeClient = () => {
+		setClientOpen(false)
+		setSelectedClient(null)
+	}
+
+	useEffect(() => console.log(clientOpen), [clientOpen])
 
 	return (
 		<div className='w-full h-full p-20 mt-10'>
@@ -41,7 +55,7 @@ const Dashboard = () => {
 					</div>
 				</CardHeader>
 				<CardBody className='h-full '>
-					<Table className='h-full relative '>
+					<Table className='relative'>
 						<Thead>
 							<Tr>
 								<Th>#</Th>
@@ -61,19 +75,15 @@ const Dashboard = () => {
 						)}
 						{data.isLoading && <SkeletonTable />}
 						{!data.isLoading && (data.data?.length ?? 0) > 0 && (
-							<Tbody className='w-full h-full'>
+							<Tbody className='w-full '>
 								{data.data?.map((row, i) => (
-									<Tr key={row.id}>
+									<Tr key={row.id} onClick={() => openClient(i)}>
 										<Td>{i + 1}</Td>
 										<Td>{row.name}</Td>
-										<Td>
-											{row.estimatedEndDate instanceof Date
-												? format(row.estimatedEndDate, 'mm/yyyy')
-												: 'null'}
-										</Td>
-										<Td>asdasdasdasdasdasdas</Td>
-										<Td>asdasdasdasdasdasdas</Td>
-										<Td>{format(row.dateAdded, 'mm/yyyy')}</Td>
+										<Td>{format(Number.parseInt(row.estimatedEndDate), 'MM/dd/yyyy')}</Td>
+										<Td>{row.pricingEstimate}</Td>
+										<Td>{row.client?.name}</Td>
+										<Td>{format(Number.parseInt(row.dateAdded), 'MM/dd/yyyy')}</Td>
 									</Tr>
 								))}
 							</Tbody>
@@ -81,8 +91,8 @@ const Dashboard = () => {
 					</Table>
 				</CardBody>
 			</Card>
-
 			<FormModal isOpen={isOpen} toggleModal={toggleModal} />
+			<ClientModal isOpen={clientOpen} onClose={closeClient} selectedClient={selectedClient} />
 		</div>
 	)
 }

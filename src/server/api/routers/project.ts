@@ -11,14 +11,14 @@ const projectSchema = z.object({
 	squareFootage: z.number(),
 	minBudget: z.number(),
 	maxBudget: z.number(),
-	location: z.string(),
+	address: z.string(),
 	pricingEstimate: z.number().optional(),
 	clientId: z.number(),
 	userId: z.number(),
 	pricingStructure: z.string(),
 	supportingFiles: z.array(z.string()),
-	estimatedEndDate: z.date().optional().nullable(),
-	dateAdded: z.date(),
+	estimatedEndDate: z.string(),
+	dateAdded: z.string(),
 })
 
 const newProjectSchema = z.object({
@@ -30,15 +30,14 @@ const newProjectSchema = z.object({
 	squareFootage: z.number(),
 	minBudget: z.number(),
 	maxBudget: z.number(),
-	location: z.string(),
+	address: z.string(),
 	pricingEstimate: z.number().optional(),
 	clientId: z.number(),
 	userId: z.number(),
-	supportingFiles: z.array(z.string()),
-	estimatedEndDate: z.date().optional().nullable(),
+	estimatedEndDate: z.string(),
 })
 
-type ProjectType = Project & {
+export type ProjectType = Project & {
 	client: Client | null
 }
 
@@ -51,12 +50,11 @@ const select = {
 	squareFootage: true,
 	minBudget: true,
 	maxBudget: true,
-	location: true,
+	address: true,
 	pricingEstimate: true,
 	clientId: true,
 	pricingStructure: true,
 	userId: true,
-	supportingFiles: true,
 	estimatedEndDate: true,
 	dateAdded: true,
 	client: {
@@ -75,10 +73,11 @@ export const projectRouter = createTRPCRouter({
 		.input(newProjectSchema)
 		.mutation(async ({ ctx, input }): Promise<Project | null> => {
 			// Create the project and connect it to the client
+			console.log(input)
 			const newProject = await ctx.db.project.create({
 				data: {
 					...input,
-					dateAdded: new Date(),
+					dateAdded: `${new Date().valueOf()}`,
 				},
 			})
 			return newProject

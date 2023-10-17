@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import { type UseFormReturn, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Client } from '@prisma/client'
 
 type ClientType = {
 	userId: number
@@ -39,44 +40,47 @@ export const clientSchema = z.object({ id: z.string() })
 
 const Client = ({
 	userId,
-	onSubmit,
 	goToPrevious,
-	goToNext,
 	methods,
+	onSubmit,
 }: {
 	userId: number
-	onSubmit: (val: object) => void
 	goToPrevious: () => void
-	goToNext: () => void
+	onSubmit: () => void
 	methods: UseFormReturn<z.infer<typeof clientSchema>>
 }) => {
 	const data = api.client.getClients.useQuery(userId, {
-		onSuccess: (dat) => {
-			if (dat && dat.length > 0) setIsMakingNewClient(false)
+		onSuccess: (dat: Client[]) => {
+			if (dat && dat.length > 0) {
+				methods.setValue('id', `${dat[0]?.id}`)
+				setIsMakingNewClient(false)
+			}
 		},
 	})
-	const mutate = api.client.createClient.useMutation()
+	const mutate = api.client.createClient.useMutation({ onSuccess: () => data.refetch() })
 
 	const [isMakingNewClient, setIsMakingNewClient] = useState(true)
-
-	const onClientSubmit = (val: object) => {
-		const input: ClientType = {
-			...(val as Pick<ClientType, 'name' | 'email'>),
-			userId,
-			personalityType: 'not-input',
-		}
-		mutate.mutate(input)
-	}
 
 	const clientMethods = useForm<z.infer<typeof newClientSchema>>({
 		mode: 'onChange',
 		resolver: zodResolver(newClientSchema),
 	})
 
+	const onClientSubmit = () => {
+		const val = clientMethods.getValues()
+		const input: ClientType = {
+			...val,
+			userId,
+			personalityType: 'not-input',
+		}
+		mutate.mutate(input)
+		setIsMakingNewClient(false)
+	}
+
 	return (
 		<>
 			{isMakingNewClient ? (
-				<Form methods={clientMethods} onSubmit={onClientSubmit}>
+				<Form methods={clientMethods}>
 					<ModalBody className='flex flex-col gap-5'>
 						<Input label="Client's name" name='name' />
 						<Input name='email' label="Client's email address" />
@@ -96,14 +100,14 @@ const Client = ({
 							variant='outline'
 							color='#f3583f'
 							borderColor='#f3583f'
-							type='submit'
+							onClick={() => void onClientSubmit()}
 							isDisabled={!clientMethods.formState.isValid}>
 							Create new Client
 						</Button>
 					</ModalFooter>
 				</Form>
 			) : (
-				<Form methods={methods} onSubmit={onSubmit}>
+				<Form methods={methods}>
 					<ModalBody className='flex flex-col gap-5'>
 						<Select name='id' label='Choose a client'>
 							{data.data?.map((client) => (
@@ -126,11 +130,11 @@ const Client = ({
 							<ChevronLeftIcon fontSize={20} color='#f3583f' />
 						</Button>
 						<Button
-							variant='ghost'
+							variant='outline'
 							type='submit'
-							onClick={() => void goToNext()}
+							onClick={onSubmit}
 							isDisabled={!methods.formState.isValid}>
-							<ChevronRightIcon fontSize={20} color='#f3583f' />
+							Submit
 						</Button>
 					</ModalFooter>
 				</Form>

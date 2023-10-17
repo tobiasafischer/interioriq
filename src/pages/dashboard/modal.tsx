@@ -1,13 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
 	Modal,
 	ModalOverlay,
 	ModalContent,
 	ModalHeader,
-	ModalBody,
 	ModalCloseButton,
-	ModalFooter,
-	Button,
 	Stepper,
 	useSteps,
 	Step,
@@ -20,36 +17,22 @@ import {
 } from '@chakra-ui/react'
 import House, { houseSchema } from './steps/house'
 import Client, { clientSchema } from './steps/client'
-import Files from './steps/files'
 import { useSession } from 'next-auth/react'
 import { type z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { api } from '~/utils/api'
 
 const FormModal = ({ isOpen, toggleModal }: { isOpen: boolean; toggleModal: () => void }) => {
 	const { data: sessionData } = useSession()
-	const [houseData, setHouseData] = useState<z.infer<typeof houseSchema> | null>(null)
-	const [clientData, setClientData] = useState<z.infer<typeof clientSchema> | null>(null)
-	const [fileData, setFileData] = useState(null)
 
-	const steps = ['House', 'Client', 'Files']
+	const steps = ['House', 'Client']
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { goToNext, goToPrevious, activeStep } = useSteps({
 		index: 1,
 		count: steps.length,
 	})
 
-	const houseSubmit = (vals: z.infer<typeof houseSchema>) => {
-		console.log('house', vals)
-		setHouseData(vals)
-	}
-	const clientSubmit = (vals: z.infer<typeof clientSchema>) => {
-		console.log('client', vals)
-		setClientData(vals)
-	}
-	const filesSubmit = (vals: object) => {
-		console.log('files', vals)
-	}
 	const houseMethods = useForm<z.infer<typeof houseSchema>>({
 		mode: 'onChange',
 		resolver: zodResolver(houseSchema),
@@ -59,8 +42,33 @@ const FormModal = ({ isOpen, toggleModal }: { isOpen: boolean; toggleModal: () =
 		resolver: zodResolver(clientSchema),
 	})
 
+	const handleClose = () => {
+		houseMethods.reset()
+		clientMethods.reset()
+		toggleModal()
+	}
+
+	const mutation = api.project.createProject.useMutation({ onSuccess: () => handleClose() })
+
+	const onSubmit = () => {
+		const vals = houseMethods.getValues()
+		const input = {
+			...vals,
+			estimatedEndDate: `${new Date(vals.estimatedEndDate).valueOf()}`,
+			bath: Number.parseInt(`${vals.bath}`),
+			maxBudget: Number.parseInt(`${vals.maxBudget}`),
+			minBudget: Number.parseInt(`${vals.minBudget}`),
+			rooms: Number.parseInt(`${vals.rooms}`),
+			squareFootage: Number.parseInt(`${vals.squareFootage}`),
+			clientId: Number.parseInt(clientMethods.getValues().id),
+			userId: Number.parseInt(sessionData?.user.id ?? ''),
+			pricingEstimate: 0,
+		}
+		mutation.mutate(input)
+	}
+
 	return (
-		<Modal isOpen={isOpen} onClose={toggleModal} size='5xl'>
+		<Modal isOpen={isOpen} onClose={handleClose}>
 			<ModalOverlay />
 			<ModalContent className='p-5'>
 				<ModalHeader className='pr-10'>
@@ -81,23 +89,15 @@ const FormModal = ({ isOpen, toggleModal }: { isOpen: boolean; toggleModal: () =
 					</Stepper>
 				</ModalHeader>
 				<ModalCloseButton />
-				{activeStep === 1 && (
-					<House
-						methods={houseMethods}
-						goToNext={goToNext}
-						onSubmit={(vals: object) => houseSubmit(vals as z.infer<typeof houseSchema>)}
-					/>
-				)}
+				{activeStep === 1 && <House methods={houseMethods} goToNext={goToNext} />}
 				{activeStep === 2 && (
 					<Client
+						onSubmit={onSubmit}
 						methods={clientMethods}
-						goToNext={goToNext}
 						goToPrevious={goToPrevious}
-						onSubmit={(vals: object) => clientSubmit(vals as z.infer<typeof clientSchema>)}
 						userId={Number.parseInt(sessionData?.user.id ?? '0')}
 					/>
 				)}
-				{activeStep === 3 && <Files onSubmit={filesSubmit} goToPrevious={goToPrevious} />}
 			</ModalContent>
 		</Modal>
 	)
