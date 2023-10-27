@@ -19,29 +19,19 @@ import { AddIcon } from '@chakra-ui/icons'
 import { useSession } from 'next-auth/react'
 import { api } from '~/utils/api'
 import FormModal from './modal'
-import ClientModal from './client-modal'
-import { type ProjectType } from '~/server/api/routers/project'
+import { useRouter } from 'next/router'
 
 const Dashboard = () => {
 	const { data: sessionData } = useSession()
 
 	const data = api.project.getProjects.useQuery(Number.parseInt(sessionData?.user.id ?? '0'))
 	const [isOpen, setIsOpen] = useState(false)
-	const [clientOpen, setClientOpen] = useState(false)
-	const [selectedClient, setSelectedClient] = useState<ProjectType | null | undefined>(null)
+	const router = useRouter()
 
 	const toggleModal = () => setIsOpen((prev) => !prev)
 	const openClient = (idx: number) => {
-		setClientOpen(true)
-		console.log('asidojasjdio')
-		if (data?.data) setSelectedClient(data?.data[idx])
+		if (data?.data) void router.push(`/projects/${data?.data[idx]?.id}`)
 	}
-	const closeClient = () => {
-		setClientOpen(false)
-		setSelectedClient(null)
-	}
-
-	useEffect(() => console.log(clientOpen), [clientOpen])
 
 	return (
 		<div className='w-full h-full p-20 mt-10'>
@@ -92,7 +82,6 @@ const Dashboard = () => {
 				</CardBody>
 			</Card>
 			<FormModal isOpen={isOpen} toggleModal={toggleModal} />
-			<ClientModal isOpen={clientOpen} onClose={closeClient} selectedClient={selectedClient} />
 		</div>
 	)
 }

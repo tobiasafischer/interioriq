@@ -1,1 +1,6 @@
-just go to the dashboard
+on the projections page 
+
+- need a visualization of everything broken down into pieces
+- user should be able to adjust each one of their liking
+- user should be able to copy and be able to paste into an email
+- 

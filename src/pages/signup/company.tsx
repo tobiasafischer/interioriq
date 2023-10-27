@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { Button, FormLabel } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
+import React from 'react'
 import Form from '~/components/form/Form'
 import Input from '~/components/form/Input'
 import SignupLayout from '../../layouts/signup-layout'
@@ -26,7 +26,9 @@ type Form = {
 const Company = () => {
 	const router = useRouter()
 	const { data: sessionData } = useSession()
-	const mutation = api.company.createCompany.useMutation()
+	const mutation = api.company.createCompany.useMutation({
+		onSuccess: () => void router.push('/dashboard'),
+	})
 
 	const onSubmit = (val: object) => {
 		const res = { ...val } as Form
@@ -38,10 +40,6 @@ const Company = () => {
 			userId: Number.parseInt(sessionData?.user.id ?? ''),
 		})
 	}
-
-	useEffect(() => {
-		if (mutation.isSuccess) void router.push('/dashboard')
-	}, [mutation.isSuccess, router])
 
 	const schema = z.object({
 		name: z.string().min(1).max(100), // Adjust min and max as needed
