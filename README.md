@@ -1,28 +1,64 @@
-# Create T3 App
+# InteriorIQ
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+InteriorIQ is a groundbreaking tool designed to transform the way interior designers price their projects. By leveraging modern technologies and frameworks, InteriorIQ simplifies the pricing process, making it more efficient and user-friendly.
 
-## What's next? How do I make an app with this?
+## Table of Contents
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+-  [Technologies](#technologies)
+-  [Features](#features)
+-  [Getting Started](#getting-started)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Technologies
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+InteriorIQ is built using a stack of technologies and tools to provide a seamless experience for interior designers. The key technologies used in this project include:
 
-## Learn More
+-  **Postgres (Supabase)**: A powerful open-source relational database used for storing and managing project data.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+-  **Prisma**: An elegant database toolkit for Node.js that simplifies database access and management.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+-  **TRpC**: TRpC is a remote procedure call (RPC) framework, likely used for communication between server and client components.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+-  **NextJS (React)**: A popular React framework for building fast and efficient web applications with server-side rendering.
 
-## How do I deploy this?
+-  **ChakraUI**: A component library for building accessible and responsive user interfaces with React.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+-  **Tailwind CSS**: A utility-first CSS framework that streamlines the styling of web applications.
+
+## Features
+
+-  **User-Friendly Interface**: The tool provides a user-friendly interface designed to enhance the user experience and improve productivity.
+
+-  **Data Management**: Leveraging Postgres via Supabase and Prisma, InteriorIQ offers robust data management capabilities, ensuring the security and integrity of project data.
+
+## Getting Started
+
+To get started with InteriorIQ, follow these steps:
+
+1. **Clone the Repository**:
+
+   ```shell
+   git clone https://github.com/tobiasafischer/interioriq.git
+   ```
+
+## Install Dependencies:
+
+**Navigate to the project directory and install the required dependencies:**
+
+```shell
+cd interioriq
+npm install
+```
+
+## Database Configuration:
+
+Set up your Postgres database with Supabase and configure your database connection in the project (e.g., .env files).
+
+## Run the Application:
+
+Start the development server:
+
+```shell
+npm run dev
+```
+
+InteriorIQ should now be running at http://localhost:3000.
