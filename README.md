@@ -46,19 +46,21 @@ To get started with InteriorIQ, follow these steps:
 
 ```shell
 cd interioriq
-npm install
+pnpm install
 ```
 
 ## Database Configuration:
 
-Set up your Postgres database with Supabase and configure your database connection in the project (e.g., .env files).
+Set up your Postgres database with Supabase and configure your database connection in the project (e.g., .env files). (See .env.example) --> you will need a google o auth key
+
+You will want to setup docker to run a local supabase instance. You can see how to do that [here](https://supabase.com/docs/guides/cli/local-development)
 
 ## Run the Application:
 
 Start the development server:
 
 ```shell
-npm run dev
+pnpm dev
 ```
 
 InteriorIQ should now be running at http://localhost:3000.
